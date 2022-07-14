@@ -1,4 +1,4 @@
-   //*************************************************BINARY TREES*****
+    //*************************************************BINARY TREES*****
 #include<iostream>
 #include<queue>
 using namespace std;
@@ -266,7 +266,7 @@ pair<int,int> findminmax(BinaryTreeNode<int>* root){
 //Function to find the sum of all the nodes in the Binary Tree
 int findsum(BinaryTreeNode<int>* root){
     if(root==NULL){
-        return NULL;
+        return 0;
     }
     int sum=root->data;
     return sum+findsum(root->left)+findsum(root->right);
@@ -298,21 +298,117 @@ pair<int,bool> isbalanced(BinaryTreeNode<int>* &root){
     ans.first=height;
     ans.second=checkbalanced;
     return ans;
+}
 
-/*
-    ans.first=1+ max(left.first,right.first);
-    if(left.second=='FALSE' || right.second=='FALSE'){
-        ans.second='FALSE';
-        return ans;
+//Function for level order Traversal
+void Levelordertraversal(BinaryTreeNode<int>* &root){
+    if(root==NULL){
+        return;
     }
-    else if(left.second=='TRUE' && right.second=='TRUE'){
-        if(abs(left.first-right.first)<=1){
-           ans.second='TRUE';
+    queue<BinaryTreeNode<int>*> pendingnodes;
+    pendingnodes.push(root);
+    pendingnodes.push(NULL);
+    while(pendingnodes.size()>1){
+        
+        BinaryTreeNode<int>* curr=pendingnodes.front();
+        pendingnodes.pop();
+        if(curr==NULL){
+            pendingnodes.push(NULL);
+            cout<<endl;
+            
+        }
+        else{
+            if(curr->left)
+            pendingnodes.push(curr->left);
+            if(curr->right)
+            pendingnodes.push(curr->right);
+            cout<<curr->data<<" ";
+        } 
+        
+    }
+    return;
+}
+
+//Function to remove leaf nodes from the binary tree and return the root
+BinaryTreeNode<int>* removeleafnode(BinaryTreeNode<int>* &root){
+    if(root==NULL) return NULL;
+    //Base case
+    if(root->left==NULL && root->right==NULL){
+        root=NULL;
+        return root;
+    }
+    removeleafnode(root->left);
+    removeleafnode(root->right);
+    return root;
+
+}
+
+/*Level wise linkedlist
+Given a binary tree, write code to create a separate linked list for each level. 
+You need to return the array which contains head of each level linked list.
+*/
+template  <typename T>
+class node{
+    public:
+    T data;
+    node<T>* next;
+    node(T data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+//Function to print the linked list
+void printLL(node<int>* &root){
+    node<int>* temp=root;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+
+vector<node<int>*> Levelwiselinkedlist(BinaryTreeNode<int>* &root){
+    vector<node<int>*> res;
+    if(root==NULL) return res;
+
+    queue<BinaryTreeNode<int>*> q;
+    node<int>* head=NULL;
+    node<int>* tail=NULL;
+
+    q.push(root);
+    q.push(NULL);
+
+    while(q.size()>0){
+        BinaryTreeNode<int>* curr=q.front();
+        q.pop();
+        if(q.size()==0){ 
+            res.push_back(head);
+            break;
+        }
+        else if(curr==NULL){
+            res.push_back(head);
+            q.push(NULL);
+            head=NULL;
+            tail=NULL;
+        }
+        else if(curr!=NULL){
+            if(curr->left) q.push(curr->left);
+            if(curr->right) q.push(curr->right);
+            node<int>* newnode= new node<int>(curr->data);
+            if(head==NULL){
+                head=newnode;
+                tail=newnode;
+            }
+            else{
+                tail->next=newnode;
+                tail=tail->next;
+            }   
         }
     }
-    return ans;
-    */
+    return res;
 }
+
 
 //Driver function
 int main(){
@@ -325,6 +421,7 @@ int main(){
     */
    
     BinaryTreeNode<int>* root=takeinput();
+    
     PrintBinaryTreeLevelWise(root);
     //cout<<countnodes(root)<<endl;
     //cout<<isXpresent(root,4)<<endl;
@@ -355,8 +452,18 @@ int main(){
    pair<int,int> p=findminmax(root);
    cout<<"Minimum:"<<p.first<<" Maximum:"<<p.second<<endl;*/
   // cout<<findsum(root)<<endl;
-  pair<int,bool> ans=isbalanced(root);
+ /* pair<int,bool> ans=isbalanced(root);
   cout<<ans.first<<" "<<ans.second;
-   
+   */
+  //BinaryTreeNode<int>* ans=removeleafnode(root);
+  //Levelordertraversal(root);
+ 
+  vector<node<int>*> res=Levelwiselinkedlist(root);
+  for(int i=0;i<res.size();i++){
+    printLL(res[i]);
+  }
+
+
    delete root;
 }
+
