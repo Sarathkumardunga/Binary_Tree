@@ -324,7 +324,47 @@ void Levelordertraversal(BinaryTreeNode<int>* &root){
             pendingnodes.push(curr->right);
             cout<<curr->data<<" ";
         } 
-        
+    }
+    return;
+}
+
+//Function for Zigzag Traversal
+/*Given a binary tree, print the zig zag order i.e print level 1 from left to right
+level 2 from right to left and so on. This means odd levels should get printed
+from left to right and even level right to left.
+*/
+void Zigzagtraversal(BinaryTreeNode<int>* &root){
+    if(root==NULL){
+        return;
+    }
+    queue<BinaryTreeNode<int>*> pendingnodes;
+    pendingnodes.push(root);
+    pendingnodes.push(NULL);
+    int count=0;
+    while(pendingnodes.size()>1){
+        BinaryTreeNode<int>* curr=pendingnodes.front();
+        pendingnodes.pop();
+        if(curr==NULL){
+            pendingnodes.push(NULL);
+            cout<<endl;
+            count++;
+        }
+        else{
+            if(count%2!=0){
+            if(curr->left)
+            pendingnodes.push(curr->left);
+            if(curr->right)
+            pendingnodes.push(curr->right);
+            cout<<curr->data<<" ";
+            }
+            else{
+                if(curr->right)
+                pendingnodes.push(curr->right);
+                if(curr->left)
+                pendingnodes.push(curr->left);
+                cout<<curr->data<<" "; 
+            }
+        }   
     }
     return;
 }
@@ -448,16 +488,17 @@ int main(){
    pair<int,int> p=findheightdiameter(root);
    cout<<"Height:"<<p.first<<" Diameter:"<<p.second<<endl;
  */
-/*
+ /*
    pair<int,int> p=findminmax(root);
-   cout<<"Minimum:"<<p.first<<" Maximum:"<<p.second<<endl;*/
+   cout<<"Minimum:"<<p.first<<" Maximum:"<<p.second<<endl;
+  */
   // cout<<findsum(root)<<endl;
- /* pair<int,bool> ans=isbalanced(root);
-  cout<<ans.first<<" "<<ans.second;
-   */
+  /* pair<int,bool> ans=isbalanced(root);
+      cout<<ans.first<<" "<<ans.second;
+  */
   //BinaryTreeNode<int>* ans=removeleafnode(root);
   //Levelordertraversal(root);
- 
+  //zigzagtraversal(root);
   vector<node<int>*> res=Levelwiselinkedlist(root);
   for(int i=0;i<res.size();i++){
     printLL(res[i]);
